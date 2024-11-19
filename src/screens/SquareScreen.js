@@ -5,25 +5,7 @@ import ColorCounter from "../components/ColorCounter";
 const COLOR_INCREMENT = 15;
 
 const SquareScreen = () => {
-  
   // METODO USEREDUCER
-
-  const reducer = (state, action) => {
-    // state === {red: number, green: number, blue: number}
-    // action === {colorToChange: "red || "green" || "blue", amount 15|| -15}
-
-    switch (action.colorToChange) {
-      case "red":
-        return { ...state, red: state.red + action.amount }; // con "...state" copiamo tutto lo stato di "state" e successivamente lo andiamo a modificare, cosi non lo facciamo direttamente
-
-      case "green":
-        return { ...state, green: state.green + action.amount };
-      case "blue":
-        return { ...state, blue: state.blue + action.amount };
-      default:
-        return state;
-    }
-  };
 
   const [state, runMyReducer] = useReducer(reducer, {
     red: 0,
@@ -32,6 +14,33 @@ const SquareScreen = () => {
   });
 
   const { red, green, blue } = state;
+  const reducer = (state, action) => {
+    // state === {red: number, green: number, blue: number}
+    // action === {type: "change_red || "change_green" || "change_blue", payload:  15 || -15}
+
+    switch (action.type) {
+      case "change_red":
+        return state.red + action.payload > 225 ||
+          state.red + action.payload < 0
+          ? state
+          : { ...state, red: state.red + action.payload }; // con "...state" copiamo tutto lo stato di "state" e successivamente lo andiamo a modificare, cosi non lo facciamo direttamente
+
+      case "change_green":
+        return state.green + action.payload > 255 ||
+          state.green + action.payload < 0
+          ? state
+          : { ...state, green: state.green + action.payload };
+
+      case "change_blue":
+        return state.blue + action.payload > 255 ||
+          state.blue + action.payload < 0
+          ? state
+          : { ...state, blue: state.blue + action.payload };
+
+      default:
+        return state;
+    }
+  };
 
   //METODO CLASSICO
 
@@ -75,28 +84,28 @@ const SquareScreen = () => {
     <View>
       <ColorCounter
         onIncrease={() =>
-          runMyReducer({ colorToChange: "red", amount: COLOR_INCREMENT })
+          runMyReducer({ type: "change_red", payload: COLOR_INCREMENT })
         }
         onDecrease={() =>
-          runMyReducer({ colorToChange: "red", amount: -1 * COLOR_INCREMENT })
+          runMyReducer({ type: "change_red", payload: -1 * COLOR_INCREMENT })
         }
         color="Rosso"
       />
       <ColorCounter
         onIncrease={() =>
-          runMyReducer({ colorToChange: "blue", amount: COLOR_INCREMENT })
+          runMyReducer({ type: "change_blue", payload: COLOR_INCREMENT })
         }
         onDecrease={() =>
-          runMyReducer({ colorToChange: "blue", amount: -1 * COLOR_INCREMENT })
+          runMyReducer({ type: "change_blue", payload: -1 * COLOR_INCREMENT })
         }
         color="Blu"
       />
       <ColorCounter
         onIncrease={() =>
-          runMyReducer({ colorToChange: "green", amount: COLOR_INCREMENT })
+          runMyReducer({ type: "change_green", payload: COLOR_INCREMENT })
         }
         onDecrease={() =>
-          runMyReducer({ colorToChange: "green", amount: -1 * COLOR_INCREMENT })
+          runMyReducer({ type: "change_green", payload: -1 * COLOR_INCREMENT })
         }
         color="Verde"
       />
